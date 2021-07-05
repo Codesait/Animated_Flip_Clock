@@ -45,16 +45,38 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 // ClockAnimation(),
-                //  ClockAnimation()
+                  ClockAnimation(
+                    onTime: _currentDateTime.hour,
+                    timerDuration: Duration(hours: 60-_currentDateTime.minute),
+                    limit: 24,
+                    start: 00,
+                  ),
+                  ClockAnimation(
+                    onTime: _currentDateTime.minute,
+                    timerDuration: Duration(seconds: 60-_currentDateTime.second),
+                    limit: 59,
+                    start: 00,
+                  ),
+                  ClockAnimation(
+                    onTime: _currentDateTime.second,
+                    timerDuration: Duration(seconds: 1),
+                    limit: 59,
+                    start: 00,
+                  ),
                 ],
               );
             else return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClockAnimation(
-                  onTime: _currentDateTime.second,
-                  timerDuration: Duration(seconds: 1),
+                  onTime: _currentDateTime.hour,
+                  timerDuration: Duration(minutes: 60 -_currentDateTime.minute),
+                  limit: 24,
+                  start: 00,
+                ),
+                ClockAnimation(
+                  onTime: _currentDateTime.minute,
+                  timerDuration: Duration(seconds: 60 -_currentDateTime.second),
                   limit: 59,
                   start: 00,
                 )

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flip_clock/widgets/timerTextWidget.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -10,11 +11,11 @@ class ClockAnimation extends StatefulWidget {
   final int start;
 
   ClockAnimation({
-    Key key,
-    this.onTime,
-    this.timerDuration,
-    this.start,
-    this.limit
+    Key? key,
+    required this.onTime,
+    required this.timerDuration,
+    required this.start,
+    required this.limit
   }) : super(key: key);
 
   @override
@@ -26,11 +27,23 @@ class ClockAnimation extends StatefulWidget {
 class _ClockAnimationState extends State<ClockAnimation>
     with SingleTickerProviderStateMixin{
 
-  AnimationController _controller;
-  Animation _animation;
+ late AnimationController _controller;
+ late Animation _animation;
 
-  Timer _timer;
-  int _clockCount;
+  Timer? _timer;
+  late int _clockCount;
+
+  BoxDecoration _decoration(bool topRadius){
+    return BoxDecoration(
+      color: Color.fromRGBO(20,20,20,1),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(topRadius ? 10:0),
+        topRight: Radius.circular(topRadius ? 10:0),
+        bottomLeft: Radius.circular(topRadius ? 0:10),
+        bottomRight: Radius.circular(topRadius ? 0:10)
+      )
+    );
+  }
 
   @override
   void initState() {
@@ -46,7 +59,7 @@ class _ClockAnimationState extends State<ClockAnimation>
 
   @override
   void dispose() {
-    _controller.dispose();
+    //_animation.isDismissed;
     super.dispose();
   }
 
@@ -63,8 +76,16 @@ class _ClockAnimationState extends State<ClockAnimation>
                 Container(
                   height: 99,
                   width: 200,
-                  color: Colors.yellow,
-                  child: Text(_clockCount.toString()),
+                  decoration: _decoration(true),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Positioned(
+                        top: 45,
+                          child: TimerTextWidget(clockCount: _clockCount,
+                          ))
+                    ],
+                  ),
                 ),
 
                 Divider(height: 2,color: Colors.transparent,),
@@ -73,18 +94,34 @@ class _ClockAnimationState extends State<ClockAnimation>
                 Stack(
                   children: [
                     Container(
-                      height: 99,
-                      width: 200,
-                      color: Colors.purple,
-                      child: Text(_clockCount.toString())
+                        height: 99,
+                        width: 200,
+                        decoration: _decoration(false),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned(
+                                bottom: 40,
+                                child: TimerTextWidget(clockCount: _clockCount)
+                            )
+                          ],
+                        )
                     ),
                     AnimatedBuilder(
                       animation: _animation,
                       child: Container(
-                        color: Colors.green,
                         height: 100,
                         width: 200,
-                        child: Text(_clockCount.toString()),
+                        decoration: _decoration(false),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned(
+                              bottom: 40,
+                                child: TimerTextWidget(clockCount: _clockCount)
+                            )
+                          ],
+                        )
                       ),
                       builder: (context, child){
                         return Transform(
