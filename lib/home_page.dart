@@ -1,3 +1,4 @@
+import 'package:flip_clock/clock_animation.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,25 +9,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static DateTime currentDateTime = DateTime.now();
+  static DateTime _currentDateTime = DateTime.now();
+  bool _isListening = false;
 
   // stream
   Stream _timer = Stream.periodic(Duration(seconds: 1),(i){
-    currentDateTime = currentDateTime.add(Duration(seconds: 1));
+    _currentDateTime = _currentDateTime.add(Duration(seconds: 1));
+    return _currentDateTime;
   });
 
 
-  listToTime(){
+  _listenToTime(){
     _timer.listen((event) {
       print(event);
-      currentDateTime = DateTime.parse(event.toString());
+      _currentDateTime = DateTime.parse(event.toString());
     });
+    _isListening = true;
   }
 
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    _isListening ? print('listening') : _listenToTime();
 
     return Scaffold(
       body: Container(
@@ -35,8 +41,25 @@ class _HomePageState extends State<HomePage> {
         child: OrientationBuilder(
           builder: (context,layout){
             if(layout == Orientation.landscape)
-              return Row();
-            else return Column();
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                 // ClockAnimation(),
+                //  ClockAnimation()
+                ],
+              );
+            else return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClockAnimation(
+                  onTime: _currentDateTime.second,
+                  timerDuration: Duration(seconds: 1),
+                  limit: 59,
+                  start: 00,
+                )
+              ],
+            );
           }
         ),
       ),
