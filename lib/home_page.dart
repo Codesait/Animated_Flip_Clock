@@ -1,5 +1,6 @@
 import 'package:flip_clock/clock_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   // const HomePage({Key? key}) : super(key: key);
@@ -41,35 +42,38 @@ class _HomePageState extends State<HomePage> {
         child: OrientationBuilder(
           builder: (context,layout){
             if(layout == Orientation.landscape)
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ClockAnimation(
-                    onTime: _currentDateTime.hour,
-                    timerDuration: Duration(hours: 60-_currentDateTime.minute),
-                    limit: 24,
-                    start: 00,
-                  ),
-                  ClockAnimation(
-                    onTime: _currentDateTime.minute,
-                    timerDuration: Duration(seconds: 60-_currentDateTime.second),
-                    limit: 59,
-                    start: 00,
-                  ),
-                  ClockAnimation(
-                    onTime: _currentDateTime.second,
-                    timerDuration: Duration(seconds: 1),
-                    limit: 59,
-                    start: 00,
-                  ),
-                ],
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: size.height/2-120),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ClockAnimation(
+                      onTime: int.parse(DateFormat("h").format(_currentDateTime).toString()),
+                      timerDuration: Duration(minutes: 60 -_currentDateTime.minute),
+                      limit: 24,
+                      start: 00,
+                    ),
+                    ClockAnimation(
+                      onTime: _currentDateTime.minute,
+                      timerDuration: Duration(seconds: 60 -_currentDateTime.second),
+                      limit: 59,
+                      start: 00,
+                    ),
+                    ClockAnimation(
+                      onTime: _currentDateTime.second,
+                      timerDuration: Duration(seconds: 1),
+                      limit: 59,
+                      start: 00,
+                    ),
+                  ],
+                ),
               );
             else return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClockAnimation(
-                  onTime: _currentDateTime.hour,
+                  onTime: int.parse(DateFormat("h").format(_currentDateTime).toString()),
                   timerDuration: Duration(minutes: 60 -_currentDateTime.minute),
                   limit: 24,
                   start: 00,

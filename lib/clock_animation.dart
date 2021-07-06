@@ -30,7 +30,7 @@ class _ClockAnimationState extends State<ClockAnimation>
  late AnimationController _controller;
  late Animation _animation;
 
-  Timer? _timer;
+ late  Timer _timer;
   late int _clockCount;
 
   BoxDecoration _decoration(bool topRadius){
@@ -59,17 +59,19 @@ class _ClockAnimationState extends State<ClockAnimation>
 
   @override
   void dispose() {
-    //_animation.isDismissed;
+    _timer.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return  Container(
-
+      padding: const EdgeInsets.all(8.0),
         child: Stack(
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
 
                 // top fraction of stack container
@@ -88,7 +90,7 @@ class _ClockAnimationState extends State<ClockAnimation>
                   ),
                 ),
 
-                Divider(height: 2,color: Colors.transparent,),
+                Divider(height: 3,color: Colors.transparent,),
 
                 // bottom fraction of stack container
                 Stack(
@@ -110,15 +112,23 @@ class _ClockAnimationState extends State<ClockAnimation>
                     AnimatedBuilder(
                       animation: _animation,
                       child: Container(
-                        height: 100,
+                        height: 99,
                         width: 200,
                         decoration: _decoration(false),
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
+                            _animation.value > 4.71 ?
                             Positioned(
                               bottom: 40,
                                 child: TimerTextWidget(clockCount: _clockCount)
+                            ):
+                            Positioned(
+                              top: 59,
+                                child: Transform(
+                                  transform: Matrix4.rotationX(math.pi),
+                                  child: TimerTextWidget(clockCount: _clockCount)
+                                )
                             )
                           ],
                         )
@@ -134,8 +144,16 @@ class _ClockAnimationState extends State<ClockAnimation>
                       },
                     ),
                   ],
-                )
+                ),
               ],
+            ),
+            Padding(
+              padding:  EdgeInsets.only(top: 100),
+              child: Container(
+                color: Colors.transparent,
+                height: 2.0,
+                width: 200,
+              ),
             )
           ],
         ),
@@ -150,7 +168,7 @@ class _ClockAnimationState extends State<ClockAnimation>
      if(_clockCount != widget.limit){
        _controller.reset();
        setState(() {
-         _clockCount++;
+         _clockCount ++;
        });
        _controller.forward();
      }else {
