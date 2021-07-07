@@ -163,7 +163,7 @@ class _ClockAnimationState extends State<ClockAnimation>
 
 
   _startTimer(){
-    Duration _flipDuration = widget.timerDuration;
+    Duration _flipDuration = widget.timerDuration ;
     _timer = Timer.periodic(_flipDuration, (timer) {
      if(_clockCount != widget.limit){
        _controller.reset();
