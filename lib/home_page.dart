@@ -22,9 +22,14 @@ class _HomePageState extends State<HomePage> {
     return _currentDateTime;
   });
 
+  final hourFormat = DateFormat('hh');
+  final minutesFormat = DateFormat('mm');
+  final secondsFormat = DateFormat('ss');
+
   @override
   void initState() {
     super.initState();
+    var date = DateTime.fromMillisecondsSinceEpoch(300000);
     _stopWatchTimer.rawTime.listen((value) =>
         print('rawTime $value ${StopWatchTimer.getDisplayTime(value)}'));
     _stopWatchTimer.minuteTime.listen((value) => print('minuteTime $value'));
@@ -100,26 +105,7 @@ class _HomePageState extends State<HomePage> {
                   currentTime: 1,
                 ),
 
-                // seconds box
-                StreamBuilder<int>(
-                  stream: _stopWatchTimer.secondTime,
-                  initialData: _stopWatchTimer.secondTime.value,
-                  builder: (context, snap) {
-                    final value = snap.data;
-                    print('Listen every second. $value');
-
-                    double cu = value! / 1000;
-
-                    // setState(() {
-                    // });
-                    return Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ClockFlipWidget(
-                        currentTime: value,
-                      )
-                    );
-                  },
-                )
+               secondsStream()
               ],
             );
         }),
@@ -143,20 +129,22 @@ class _HomePageState extends State<HomePage> {
   final _scrollController = ScrollController();
 
   Widget secondsStream() {
-    return StreamBuilder<int>(
-      stream: _stopWatchTimer.secondTime,
-      initialData: _stopWatchTimer.secondTime.value,
-      builder: (context, snap) {
-        final value = snap.data;
-        print('Listen every second. $value');
-        late double currentTime;
-        setState(() {
-          currentTime = double.parse(value.toString()) / 100;
-        });
-        return ClockFlipWidget(
-          currentTime: int.parse(currentTime.round().toString()),
-        );
-      },
-    );
+    return  // seconds box
+      StreamBuilder<int>(
+        stream: _stopWatchTimer.rawTime,
+        initialData: _stopWatchTimer.rawTime.value,
+        builder: (context, snap) {
+          final value = snap.data;
+          print('Listen every raw time. $value');
+          
+          var time = DateTime.fromMillisecondsSinceEpoch(value!);
+          return Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: ClockFlipWidget(
+                currentTime: int.parse(secondsFormat.format(time)),
+              )
+          );
+        },
+      );
   }
 }
