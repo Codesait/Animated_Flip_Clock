@@ -1,6 +1,5 @@
 import 'package:flip_clock/clock_animation.dart';
 import 'package:flip_clock/widgets/flip_widget.dart';
-import 'package:flip_clock/widgets/timerTextWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -22,8 +21,8 @@ class _HomePageState extends State<HomePage> {
     return _currentDateTime;
   });
 
-  final hourFormat = DateFormat('hh');
-  final minutesFormat = DateFormat('mm');
+  final hourFormat = DateFormat('h');
+  final minutesFormat = DateFormat('m');
   final secondsFormat = DateFormat('ss');
 
   @override
@@ -32,9 +31,9 @@ class _HomePageState extends State<HomePage> {
     var date = DateTime.fromMillisecondsSinceEpoch(300000);
     _stopWatchTimer.rawTime.listen((value) =>
         print('rawTime $value ${StopWatchTimer.getDisplayTime(value)}'));
-    _stopWatchTimer.minuteTime.listen((value) => print('minuteTime $value'));
-    _stopWatchTimer.secondTime.listen((value) => print('secondTime $value'));
-    _stopWatchTimer.records.listen((value) => print('records $value'));
+   // _stopWatchTimer.minuteTime.listen((value) => print('minuteTime $value'));
+    // _stopWatchTimer.secondTime.listen((value) => print('secondTime $value'));
+    // _stopWatchTimer.records.listen((value) => print('records $value'));
   }
 
   @override
@@ -72,27 +71,31 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ClockAnimation(
-                    onTime: int.parse(
-                        DateFormat("h").format(_currentDateTime).toString()),
-                    timerDuration:
-                        Duration(minutes: 60 - _currentDateTime.minute),
-                    limit: 23,
-                    start: 00,
-                  ),
-                  ClockAnimation(
-                    onTime: _currentDateTime.minute,
-                    timerDuration:
-                        Duration(seconds: 60 - _currentDateTime.second),
-                    limit: 59,
-                    start: 00,
-                  ),
-                  ClockAnimation(
-                    onTime: _currentDateTime.second,
-                    timerDuration: Duration(seconds: 1),
-                    limit: 59,
-                    start: 00,
-                  ),
+                  // ClockAnimation(
+                  //   onTime: int.parse(
+                  //       DateFormat("h").format(_currentDateTime).toString()),
+                  //   timerDuration:
+                  //       Duration(minutes: 60 - _currentDateTime.minute),
+                  //   limit: 23,
+                  //   start: 00,
+                  // ),
+                  // ClockAnimation(
+                  //   onTime: _currentDateTime.minute,
+                  //   timerDuration:
+                  //       Duration(seconds: 60 - _currentDateTime.second),
+                  //   limit: 59,
+                  //   start: 00,
+                  // ),
+                  // ClockAnimation(
+                  //   onTime: _currentDateTime.second,
+                  //   timerDuration: Duration(seconds: 1),
+                  //   limit: 59,
+                  //   start: 00,
+                  // ),
+
+                  timeStream("h"),
+                  timeStream("m"),
+                  timeStream("s")
                 ],
               ),
             );
@@ -100,12 +103,11 @@ class _HomePageState extends State<HomePage> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // minutes box
-                ClockFlipWidget(
-                  currentTime: 1,
-                ),
+              // hour box
+              timeStream("h"),
 
-               secondsStream()
+              //minute box
+              timeStream("m")
               ],
             );
         }),
@@ -113,22 +115,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  final _isHours = true;
+  final bool _isHour = true;
 
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,
-    presetMillisecond: StopWatchTimer.getMilliSecFromSecond(300),
-    onChange: (value) => print('onChange $value'),
-    onChangeRawSecond: (value) => print('onChangeRawSecond $value'),
-    onChangeRawMinute: (value) => print('onChangeRawMinute $value'),
+    presetMillisecond: StopWatchTimer.getMilliSecFromHour(2),
+   // onChange: (value) => print('onChange $value'),
+    // onChangeRawSecond: (value) => print('onChangeRawSecond $value'),
+    // onChangeRawMinute: (value) => print('onChangeRawMinute $value'),
     onEnded: () {
       print('onEnded');
     },
   );
 
-  final _scrollController = ScrollController();
 
-  Widget secondsStream() {
+  Widget timeStream(String type) {
     return  // seconds box
       StreamBuilder<int>(
         stream: _stopWatchTimer.rawTime,
@@ -136,12 +137,38 @@ class _HomePageState extends State<HomePage> {
         builder: (context, snap) {
           final value = snap.data;
           print('Listen every raw time. $value');
-          
-          var time = DateTime.fromMillisecondsSinceEpoch(value!);
+
+          final displayTime =
+          StopWatchTimer.getDisplayTime(value!, hours: _isHour);
+
+          String newHr = displayTime.toString();
+          List<String> hrParts = newHr.split(" ");
+
+
+          //--------------- using time raw milliseconds
+          var time = DateTime.fromMillisecondsSinceEpoch(value);
+
+
+          //--------------- check time type and then format
+         late int currentTime;
+          if(type == "h"){
+            // if hour i will use get charAt to get hour from entire dateTime
+            String hour = newHr[0] + newHr[1];
+            print("hour: " + hour);
+            currentTime = int.parse(hour);
+            
+
+          }else if(type == "m"){
+            currentTime = int.parse(minutesFormat.format(time));
+          }else{
+            currentTime = int.parse(secondsFormat.format(time));
+          }
+
+
           return Padding(
               padding: const EdgeInsets.all(2.0),
               child: ClockFlipWidget(
-                currentTime: int.parse(secondsFormat.format(time)),
+                currentTime: currentTime,
               )
           );
         },
