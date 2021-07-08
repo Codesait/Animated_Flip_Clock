@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TimerTextWidget extends StatefulWidget {
   final int? clockCount;
@@ -13,10 +14,7 @@ class _TimerTextWidgetState extends State<TimerTextWidget> {
   Widget build(BuildContext context) {
     return Text(
         widget.clockCount.toString().padLeft(2,'0'),
-      style: TextStyle(
-        color: Colors.white70,
-        fontSize: 100
-      ),
+      style: GoogleFonts.permanentMarker(color: Colors.white70,fontSize: 130.0),
     );
   }
 }

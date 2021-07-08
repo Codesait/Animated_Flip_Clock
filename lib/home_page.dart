@@ -1,5 +1,5 @@
-import 'package:flip_clock/clock_animation.dart';
 import 'package:flip_clock/widgets/flip_widget.dart';
+import 'package:flip_clock/widgets/side_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -12,22 +12,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static DateTime _currentDateTime = DateTime.now();
+ // static DateTime _currentDateTime = DateTime.now();
 
 
 
   final minutesFormat = DateFormat('m');
   final secondsFormat = DateFormat('ss');
 
+ late bool sidebarVisible = true;
+
   @override
   void initState() {
     super.initState();
     var date = DateTime.fromMillisecondsSinceEpoch(300000);
-    _stopWatchTimer.rawTime.listen((value) =>
-        print('rawTime $value ${StopWatchTimer.getDisplayTime(value)}'));
-   // _stopWatchTimer.minuteTime.listen((value) => print('minuteTime $value'));
-    // _stopWatchTimer.secondTime.listen((value) => print('secondTime $value'));
-    // _stopWatchTimer.records.listen((value) => print('records $value'));
+     _stopWatchTimer.secondTime.listen((value) => print('secondTime $value'));
   }
 
   @override
@@ -44,60 +42,67 @@ class _HomePageState extends State<HomePage> {
 
     _stopWatchTimer.onExecute.add(StopWatchExecute.start);
 
-    // _isListening ? print('listening') : _listenToTime();
 
     return Scaffold(
-      body: Container(
-        height: size.height,
-        width: size.width,
-        child: OrientationBuilder(builder: (context, layout) {
-          if (layout == Orientation.landscape)
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: size.height / 2 - 120),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: GestureDetector(
+        onTap: (){
+          setState(() {
+            if(sidebarVisible)
+              sidebarVisible = false;
+            else sidebarVisible = true;
+          });
+        },
+        child: Container(
+          width: size.width,
+          height: size.height,
+          child:  Stack(
                 children: [
-                  // ClockAnimation(
-                  //   onTime: int.parse(
-                  //       DateFormat("h").format(_currentDateTime).toString()),
-                  //   timerDuration:
-                  //       Duration(minutes: 60 - _currentDateTime.minute),
-                  //   limit: 23,
-                  //   start: 00,
-                  // ),
-                  // ClockAnimation(
-                  //   onTime: _currentDateTime.minute,
-                  //   timerDuration:
-                  //       Duration(seconds: 60 - _currentDateTime.second),
-                  //   limit: 59,
-                  //   start: 00,
-                  // ),
-                  // ClockAnimation(
-                  //   onTime: _currentDateTime.second,
-                  //   timerDuration: Duration(seconds: 1),
-                  //   limit: 59,
-                  //   start: 00,
-                  // ),
 
-                  timeStream("h"),
-                  timeStream("m"),
-                  timeStream("s")
+                  Container(
+                    height: size.height,
+                    width: sidebarVisible ? size.width - 60 : size.width,
+                    child: OrientationBuilder(builder: (context, layout) {
+                      if (layout == Orientation.landscape)
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: size.height / 2 - 120),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(child: timeStream("h")),
+                              Expanded(child: timeStream("m")),
+                              Expanded(child: timeStream("s"))
+                            ],
+                          ),
+                        );
+                      else
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                          // hour box
+                          timeStream("h"),
+
+                          //minute box
+                          timeStream("m")
+                          ],
+                        );
+                    }),
+                  ),
+
+                  Positioned(
+                    right: 10,
+                    height: size.height,
+                    child: Center(
+                      child: Visibility(
+                        child: SideBar(size: size,),
+                        visible: sidebarVisible,
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
-            );
-          else
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              // hour box
-              timeStream("h"),
-
-              //minute box
-              timeStream("m")
-              ],
-            );
-        }),
+          ),
       ),
     );
   }
@@ -123,7 +128,7 @@ class _HomePageState extends State<HomePage> {
         initialData: _stopWatchTimer.rawTime.value,
         builder: (context, snap) {
           final value = snap.data;
-          print('Listen every raw time. $value');
+         // print('Listen every raw time. $value');
 
           final displayTime =
           StopWatchTimer.getDisplayTime(value!, hours: _isHour);

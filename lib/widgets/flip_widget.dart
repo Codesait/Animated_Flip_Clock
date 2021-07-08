@@ -26,7 +26,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
   late AnimationController _controller;
   late Animation _animation;
 
-  late  Timer _timer;
+  //late  Timer _timer;
   late int _clockCount;
 
   BoxDecoration _decoration(bool topRadius){
@@ -53,20 +53,26 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    _onTimeChange();
+    super.didChangeDependencies();
+  }
+
 
 
 
 
   @override
   void dispose() {
-    _timer.cancel();
+    //_timer.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _onTimeChange();
+
     return  Container(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -84,14 +90,14 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
                   alignment: Alignment.center,
                   children: [
                     Positioned(
-                        top: 45,
+                        top: 10,
                         child: TimerTextWidget(clockCount: widget.currentTime,
                         ))
                   ],
                 ),
               ),
 
-              Divider(height: 3,color: Colors.transparent,),
+              Divider(height: 4.0,color: Colors.transparent,),
 
               // bottom fraction of stack container
               Stack(
@@ -103,8 +109,9 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
+
                           Positioned(
-                              bottom: 40,
+                              bottom: 10,
                               child: TimerTextWidget(clockCount: widget.currentTime)
                           )
                         ],
@@ -121,11 +128,11 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
                           children: [
                             _animation.value > 4.71 ?
                             Positioned(
-                                bottom: 40,
+                                bottom: 10,
                                 child: TimerTextWidget(clockCount: widget.currentTime)
                             ):
                             Positioned(
-                                top: 59,
+                                top: 99,
                                 child: Transform(
                                     transform: Matrix4.rotationX(math.pi),
                                     child: TimerTextWidget(clockCount: widget.currentTime)
@@ -149,7 +156,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
             ],
           ),
           Padding(
-            padding:  EdgeInsets.only(top: 100),
+            padding:  EdgeInsets.only(top: 99),
             child: Container(
               color: Colors.transparent,
               height: 2.0,
@@ -164,10 +171,10 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
 
   _onTimeChange(){
     if(widget.currentTime != _clockCount){
-      _controller.reset();
       setState(() {
         _clockCount = widget.currentTime;
       });
+      _controller.reset();
       _controller.forward();
     }
 
