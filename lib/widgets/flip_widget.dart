@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class ClockFlipWidget extends StatefulWidget {
-  final int? currentTime;
+  final int currentTime;
 
 
   ClockFlipWidget({
     Key? key,
-     this.currentTime,
+     required this.currentTime,
 
   }) : super(key: key);
 
@@ -27,7 +27,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
   late Animation _animation;
 
   late  Timer _timer;
-  late int? _clockCount;
+  late int _clockCount;
 
   BoxDecoration _decoration(bool topRadius){
     return BoxDecoration(
@@ -43,7 +43,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
 
   @override
   void initState() {
-    _onTimeChange();
+    _clockCount = widget.currentTime;
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 1000));
     _animation = Tween<double>(end: math.pi, begin: math.pi * 2).animate(_controller);
     _animation.addListener(() {
@@ -52,6 +52,8 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
     //_startTimer();
     super.initState();
   }
+
+
 
 
 
@@ -64,6 +66,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
 
   @override
   Widget build(BuildContext context) {
+    _onTimeChange();
     return  Container(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -160,9 +163,14 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
 
 
   _onTimeChange(){
-    setState(() {
-      _clockCount = widget.currentTime;
-    });
+    if(widget.currentTime != _clockCount){
+      _controller.reset();
+      setState(() {
+        _clockCount = widget.currentTime;
+      });
+      _controller.forward();
+    }
+
   }
 
   // _startTimer(){

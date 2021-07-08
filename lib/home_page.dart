@@ -13,15 +13,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static DateTime _currentDateTime = DateTime.now();
-  bool _isListening = false;
 
-  // stream
-  Stream _timer = Stream.periodic(Duration(seconds: 1), (i) {
-    _currentDateTime = _currentDateTime.add(Duration(seconds: 1));
-    return _currentDateTime;
-  });
 
-  final hourFormat = DateFormat('h');
+
   final minutesFormat = DateFormat('m');
   final secondsFormat = DateFormat('ss');
 
@@ -42,13 +36,6 @@ class _HomePageState extends State<HomePage> {
     await _stopWatchTimer.dispose();
   }
 
-  _listenToTime() {
-    _timer.listen((event) {
-      print(event);
-      _currentDateTime = DateTime.parse(event.toString());
-    });
-    _isListening = true;
-  }
 
 
   @override
