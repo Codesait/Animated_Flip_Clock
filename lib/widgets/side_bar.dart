@@ -1,17 +1,17 @@
+import 'package:flip_clock/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class SideBar extends StatefulWidget {
+class SideBar extends StatelessWidget {
   const SideBar({Key? key,required this.size}) : super(key: key);
 
  final Size size;
 
   @override
-  _SideBarState createState() => _SideBarState();
-}
-
-class _SideBarState extends State<SideBar> {
-  @override
   Widget build(BuildContext context) {
+    final _appThemeStateProvider  = Provider.of<AppThemeNotifier>(context);
+
+
     return  Container(
         width: 50,
         height: 180,
@@ -23,11 +23,15 @@ class _SideBarState extends State<SideBar> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             buttons(
-              iconData: Icons.nights_stay_outlined,
-              clickEvent: (){}
+              iconData: _appThemeStateProvider.darkTheme ? Icons.nights_stay_outlined : Icons.wb_sunny,
+              clickEvent: () {
+                _appThemeStateProvider.darkTheme == false
+                ? _appThemeStateProvider.darkTheme = true
+                : _appThemeStateProvider.darkTheme = false;
+              }
             ),
             buttons(
-                iconData: Icons.screen_rotation,
+                iconData:  Icons.screen_rotation,
                 clickEvent: (){}
             ),
             buttons(

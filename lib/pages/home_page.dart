@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    var date = DateTime.fromMillisecondsSinceEpoch(300000);
+   // var date = DateTime.fromMillisecondsSinceEpoch(300000);
      _stopWatchTimer.secondTime.listen((value) => print('secondTime $value'));
   }
 
@@ -37,10 +37,12 @@ class _HomePageState extends State<HomePage> {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ) {
+
     Size size = MediaQuery.of(context).size;
 
     _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+
 
 
     return Scaffold(
@@ -83,7 +85,24 @@ class _HomePageState extends State<HomePage> {
                           timeStream("h"),
 
                           //minute box
-                          timeStream("m")
+                          timeStream("m"),
+                          Container(
+                            width: 210,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(width: 130,),
+                                Flexible(
+                                  child: timeStream(
+                                    's',
+                                    prefFont: 50,
+                                    prefHeight: 40,
+                                    prefWeight: 65,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                           ],
                         );
                     }),
@@ -109,6 +128,7 @@ class _HomePageState extends State<HomePage> {
 
   final bool _isHour = true;
 
+  // timer package constructor --------------------
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,
     presetMillisecond: StopWatchTimer.getMilliSecFromHour(2),
@@ -121,21 +141,19 @@ class _HomePageState extends State<HomePage> {
   );
 
 
-  Widget timeStream(String type) {
+  // stream widget -------------------------
+  Widget timeStream(String type,{double? prefFont,double? prefHeight, double? prefWeight}) {
     return  // seconds box
       StreamBuilder<int>(
         stream: _stopWatchTimer.rawTime,
         initialData: _stopWatchTimer.rawTime.value,
         builder: (context, snap) {
-          final value = snap.data;
-         // print('Listen every raw time. $value');
 
+          final value = snap.data;
           final displayTime =
           StopWatchTimer.getDisplayTime(value!, hours: _isHour);
 
           String newHr = displayTime.toString();
-          List<String> hrParts = newHr.split(" ");
-
 
           //--------------- using time raw milliseconds
           var time = DateTime.fromMillisecondsSinceEpoch(value);
@@ -161,6 +179,9 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(2.0),
               child: ClockFlipWidget(
                 currentTime: currentTime,
+                prefFont: prefFont,
+                prefHeight: prefHeight,
+                prefWeight: prefWeight,
               )
           );
         },
