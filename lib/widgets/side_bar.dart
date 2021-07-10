@@ -1,12 +1,18 @@
 import 'package:flip_clock/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class SideBar extends StatelessWidget {
+class SideBar extends StatefulWidget {
   const SideBar({Key? key,required this.size}) : super(key: key);
 
  final Size size;
 
+  @override
+  _SideBarState createState() => _SideBarState();
+}
+
+class _SideBarState extends State<SideBar> {
   @override
   Widget build(BuildContext context) {
     final _appThemeStateProvider  = Provider.of<AppThemeNotifier>(context);
@@ -32,7 +38,9 @@ class SideBar extends StatelessWidget {
             ),
             buttons(
                 iconData:  Icons.screen_rotation,
-                clickEvent: (){}
+                clickEvent: (){
+                  switchOrientation(context);
+                }
             ),
             buttons(
                 iconData: Icons.font_download_outlined,
@@ -60,5 +68,14 @@ class SideBar extends StatelessWidget {
           onPressed: clickEvent
       ),
     );
+  }
+
+  void switchOrientation(context){
+    SystemChrome.setPreferredOrientations([
+      MediaQuery.of(context).orientation == Orientation.landscape
+          ? DeviceOrientation.portraitUp
+          : DeviceOrientation.landscapeLeft,
+    ]);
+    setState((){});
   }
 }
