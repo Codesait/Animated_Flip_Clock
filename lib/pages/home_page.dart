@@ -164,7 +164,6 @@ class _HomePageState extends State<HomePage> {
           if(type == "h"){
             // if hour i will use get charAt to get hour from entire dateTime
             String hour = newHr[0] + newHr[1];
-            print("hour: " + hour);
             currentTime = int.parse(hour);
             
 

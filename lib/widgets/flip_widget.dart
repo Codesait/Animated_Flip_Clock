@@ -175,20 +175,4 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
     }
   }
 
-// _startTimer(){
-//   Duration _flipDuration = widget.timerDuration ;
-//   _timer = Timer.periodic(_flipDuration, (timer) {
-//     if(_clockCount != widget.limit){
-//       _controller.reset();
-//       setState(() {
-//         _clockCount ++;
-//       });
-//       _controller.forward();
-//     }else {
-//       setState(() {
-//         _clockCount = widget.start;
-//       });
-//     }
-//   });
-// }
 }

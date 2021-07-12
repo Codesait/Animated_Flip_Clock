@@ -28,21 +28,22 @@ class _SideBarState extends State<SideBar> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            buttons(
-              iconData: _appThemeStateProvider.darkTheme ? Icons.nights_stay_outlined : Icons.wb_sunny,
+            button(
+              iconData: _appThemeStateProvider.darkTheme ?  Icons.wb_sunny :Icons.nights_stay_outlined,
+              iconColor:  _appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
               clickEvent: () {
                 _appThemeStateProvider.darkTheme == false
                 ? _appThemeStateProvider.darkTheme = true
                 : _appThemeStateProvider.darkTheme = false;
               }
             ),
-            buttons(
+            button(
                 iconData:  Icons.screen_rotation,
                 clickEvent: (){
                   switchOrientation(context);
                 }
             ),
-            buttons(
+            button(
                 iconData: Icons.font_download_outlined,
                 clickEvent: (){}
             )
@@ -51,7 +52,7 @@ class _SideBarState extends State<SideBar> {
     );
   }
 
-  Widget buttons({required IconData iconData,required VoidCallback clickEvent}){
+  Widget button({required IconData iconData,required VoidCallback clickEvent, Color? iconColor}){
     return Container(
       height: 40,
       width: 40,
@@ -63,7 +64,7 @@ class _SideBarState extends State<SideBar> {
         splashRadius: 22,
           icon: Icon(
             iconData,
-            color: Colors.white,
+            color: iconColor,
           ),
           onPressed: clickEvent
       ),
