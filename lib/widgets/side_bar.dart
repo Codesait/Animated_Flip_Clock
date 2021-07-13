@@ -2,17 +2,24 @@ import 'package:flip_clock/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class SideBar extends StatefulWidget {
-  const SideBar({Key? key,required this.size}) : super(key: key);
+  const SideBar({
+    Key? key,
+    required this.size,
+    required this.stopWatchTimer}) : super(key: key);
 
  final Size size;
+ final StopWatchTimer stopWatchTimer;
 
   @override
   _SideBarState createState() => _SideBarState();
 }
 
 class _SideBarState extends State<SideBar> {
+  bool _isTimerRunning = false;
+
   @override
   Widget build(BuildContext context) {
     final _appThemeStateProvider  = Provider.of<AppThemeNotifier>(context);
@@ -39,13 +46,29 @@ class _SideBarState extends State<SideBar> {
             ),
             button(
                 iconData:  Icons.screen_rotation,
+                iconColor:  _appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
                 clickEvent: (){
                   switchOrientation(context);
                 }
             ),
             button(
-                iconData: Icons.font_download_outlined,
-                clickEvent: (){}
+                iconData: _isTimerRunning ? Icons.pause : Icons.play_arrow_outlined,
+                iconColor:  _appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
+                clickEvent: (){
+                  if(!_isTimerRunning){
+                    widget.stopWatchTimer.onExecute
+                        .add(StopWatchExecute.start);
+                    setState(() {
+                      _isTimerRunning = true;
+                    });
+
+                  }else {
+                    widget.stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                    setState(() {
+                      _isTimerRunning = false;
+                    });
+                  }
+                }
             )
           ],
         ),

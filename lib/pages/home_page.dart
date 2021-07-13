@@ -41,9 +41,7 @@ class _HomePageState extends State<HomePage> {
 
     Size size = MediaQuery.of(context).size;
 
-    _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-
-
+   // _stopWatchTimer.onExecute.add(StopWatchExecute.start);
 
     return Scaffold(
       body: GestureDetector(
@@ -113,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                     height: size.height,
                     child: Center(
                       child: Visibility(
-                        child: SideBar(size: size,),
+                        child: SideBar(size: size,stopWatchTimer: _stopWatchTimer,),
                         visible: sidebarVisible,
                       ),
                     ),
