@@ -1,9 +1,7 @@
 # flip_clock
 
-<img src="https://camo.githubusercontent.com/..." data-canonical-src="https://user-images.githubusercontent.com/37216036/130337986-b76f0951-9644-4a89-b923-0fa138373962.mov" width="200" height="400" />
 
-
-
+https://user-images.githubusercontent.com/37216036/130337986-b76f0951-9644-4a89-b923-0fa138373962.mov
 
 
 A new Flutter project.
