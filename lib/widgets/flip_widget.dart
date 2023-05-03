@@ -40,7 +40,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
   void initState() {
     _clockCount = widget.currentTime;
     _controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1000));
+        vsync: this, duration: Duration(milliseconds: 300));
     _animation =
         Tween<double>(end: math.pi, begin: math.pi * 2).animate(_controller);
     _animation.addListener(() {
@@ -75,7 +75,7 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
                   alignment: Alignment.center,
                   children: [
                     Positioned(
-                        top: 10,
+                        top: 5,
                         child: TimerTextWidget(
                           clockCount: widget.currentTime,
                           prefFont: widget.prefFont,
@@ -109,6 +109,8 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
                               ))
                         ],
                       )),
+
+
                   AnimatedBuilder(
                     animation: _animation,
                     child: Container(
@@ -120,16 +122,29 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
+
+                            Visibility(
+                              visible: _animation.value < 4.71,
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Divider(
+                                  height: 6.0,
+                                  thickness: 3,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+
+
                             _animation.value > 4.71
                                 ? Positioned(
-                                    bottom:widget.prefHeight != null? 8:10,
+                                    bottom: 5,
                                     child: TimerTextWidget(
                                       clockCount: widget.currentTime,
                                       prefFont: widget.prefFont,
-
                                     ))
                                 : Positioned(
-                                    top: widget.prefHeight != null ? 40: 99,
+                                    top: widget.prefHeight != null ? 40 : 106,
                                     child: Transform(
                                         transform: Matrix4.rotationX(math.pi),
                                         child: TimerTextWidget(
@@ -174,5 +189,4 @@ class _ClockFlipWidgetState extends State<ClockFlipWidget>
       _controller.forward();
     }
   }
-
 }

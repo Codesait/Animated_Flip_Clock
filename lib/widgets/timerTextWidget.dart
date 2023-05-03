@@ -15,7 +15,7 @@ class _TimerTextWidgetState extends State<TimerTextWidget> {
   Widget build(BuildContext context) {
     return Text(
         widget.clockCount.toString().padLeft(2,'0'),
-      style: GoogleFonts.permanentMarker(
+      style: GoogleFonts.poppins(
           color: Colors.white70,
           fontSize: widget.prefFont == null ? 130.0 : widget.prefFont),
     );

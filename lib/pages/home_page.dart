@@ -12,10 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
  // static DateTime _currentDateTime = DateTime.now();
-
-
-
   final minutesFormat = DateFormat('m');
   final secondsFormat = DateFormat('ss');
 
