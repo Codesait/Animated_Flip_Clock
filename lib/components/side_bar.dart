@@ -6,23 +6,24 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class SideBar extends StatefulWidget {
   const SideBar({
-    Key? key,
     required this.size,
-    required this.stopWatchTimer}) : super(key: key);
+    required this.stopWatchTimer,
+    Key? key,
+    }) : super(key: key);
 
  final Size size;
  final StopWatchTimer stopWatchTimer;
 
   @override
-  _SideBarState createState() => _SideBarState();
+  SideBarState createState() => SideBarState();
 }
 
-class _SideBarState extends State<SideBar> {
+class SideBarState extends State<SideBar> {
   bool _isTimerRunning = false;
 
   @override
   Widget build(BuildContext context) {
-    final _appThemeStateProvider  = Provider.of<AppThemeNotifier>(context);
+    final appThemeStateProvider  = Provider.of<AppThemeNotifier>(context);
 
 
     return  Container(
@@ -30,30 +31,30 @@ class _SideBarState extends State<SideBar> {
         height: 180,
         decoration: BoxDecoration(
          // color: Colors.black.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(10)
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             button(
-              iconData: _appThemeStateProvider.darkTheme ?  Icons.wb_sunny :Icons.nights_stay_outlined,
-              iconColor:  _appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
+              iconData: appThemeStateProvider.darkTheme ?  Icons.wb_sunny :Icons.nights_stay_outlined,
+              iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
               clickEvent: () {
-                _appThemeStateProvider.darkTheme == false
-                ? _appThemeStateProvider.darkTheme = true
-                : _appThemeStateProvider.darkTheme = false;
-              }
+                appThemeStateProvider.darkTheme == false
+                ? appThemeStateProvider.darkTheme = true
+                : appThemeStateProvider.darkTheme = false;
+              },
             ),
             button(
                 iconData:  Icons.screen_rotation,
-                iconColor:  _appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
+                iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
                 clickEvent: (){
                   switchOrientation(context);
-                }
+                },
             ),
             button(
                 iconData: _isTimerRunning ? Icons.pause : Icons.play_arrow_outlined,
-                iconColor:  _appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
+                iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
                 clickEvent: (){
                   if(!_isTimerRunning){
                     widget.stopWatchTimer.onExecute
@@ -68,7 +69,7 @@ class _SideBarState extends State<SideBar> {
                       _isTimerRunning = false;
                     });
                   }
-                }
+                },
             )
           ],
         ),
@@ -81,7 +82,7 @@ class _SideBarState extends State<SideBar> {
       width: 40,
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(2.0)
+        borderRadius: BorderRadius.circular(2),
       ),
       child: IconButton(
         splashRadius: 22,
@@ -89,16 +90,14 @@ class _SideBarState extends State<SideBar> {
             iconData,
             color: iconColor,
           ),
-          onPressed: clickEvent
+          onPressed: clickEvent,
       ),
     );
   }
 
-  void switchOrientation(context){
+  void switchOrientation(BuildContext context){
     SystemChrome.setPreferredOrientations([
-      MediaQuery.of(context).orientation == Orientation.landscape
-          ? DeviceOrientation.portraitUp
-          : DeviceOrientation.landscapeLeft,
+      if (MediaQuery.of(context).orientation == Orientation.landscape) DeviceOrientation.portraitUp else DeviceOrientation.landscapeLeft,
     ]);
     setState((){});
   }

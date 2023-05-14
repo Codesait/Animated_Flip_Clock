@@ -11,7 +11,7 @@ class AppThemeNotifier with ChangeNotifier {
 
   set darkTheme(bool value) {
     _darkTheme = value;
-    darkThemePreference.setDarkTheme(value);
+    darkThemePreference.setDarkTheme(value:value);
     notifyListeners();
   }
 }

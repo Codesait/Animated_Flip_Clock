@@ -1,17 +1,18 @@
-import 'package:flip_clock/widgets/flip_widget.dart';
-import 'package:flip_clock/widgets/side_bar.dart';
+import 'package:flip_clock/components/flip_widget.dart';
+import 'package:flip_clock/components/side_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class HomePage extends StatefulWidget {
-  // const HomePage({Key? key}) : super(key: key);
+   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
 
 
  // static DateTime _currentDateTime = DateTime.now();
@@ -24,11 +25,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
    // var date = DateTime.fromMillisecondsSinceEpoch(300000);
-     _stopWatchTimer.secondTime.listen((value) => print('secondTime $value'));
+     _stopWatchTimer.secondTime.listen((value) => debugPrint('secondTime $value'));
   }
 
   @override
-  void dispose() async {
+  Future<void> dispose() async {
     super.dispose();
     await _stopWatchTimer.dispose();
   }
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context, ) {
 
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
    // _stopWatchTimer.onExecute.add(StopWatchExecute.start);
 
@@ -46,49 +47,50 @@ class _HomePageState extends State<HomePage> {
       body: GestureDetector(
         onTap: (){
           setState(() {
-            if(sidebarVisible)
+            if(sidebarVisible) {
               sidebarVisible = false;
-            else sidebarVisible = true;
+            } else {
+              sidebarVisible = true;
+            }
           });
         },
-        child: Container(
+        child: SizedBox(
           width: size.width,
           height: size.height,
           child:  Stack(
                 children: [
 
-                  Container(
+                  SizedBox(
                     height: size.height,
                     width: sidebarVisible ? size.width - 60 : size.width,
                     child: OrientationBuilder(builder: (context, layout) {
-                      if (layout == Orientation.landscape)
+                      if (layout == Orientation.landscape) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: size.height / 2 - 120),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Expanded(child: timeStream("h")),
-                              Expanded(child: timeStream("m")),
-                              Expanded(child: timeStream("s"))
+                              Expanded(child: timeStream('h')),
+                              Expanded(child: timeStream('m')),
+                              Expanded(child: timeStream('s'))
                             ],
                           ),
                         );
-                      else
+                      } else {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                           // hour box
-                          timeStream("h"),
+                          timeStream('h'),
 
                           //minute box
-                          timeStream("m"),
-                          Container(
+                          timeStream('m'),
+                          SizedBox(
                             width: 210,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                SizedBox(width: 130,),
+                                const SizedBox(width: 130,),
                                 Flexible(
                                   child: timeStream(
                                     's',
@@ -102,7 +104,8 @@ class _HomePageState extends State<HomePage> {
                           )
                           ],
                         );
-                    }),
+                      }
+                    },),
                   ),
 
                   Positioned(
@@ -110,8 +113,8 @@ class _HomePageState extends State<HomePage> {
                     height: size.height,
                     child: Center(
                       child: Visibility(
-                        child: SideBar(size: size,stopWatchTimer: _stopWatchTimer,),
                         visible: sidebarVisible,
+                        child: SideBar(size: size,stopWatchTimer: _stopWatchTimer,),
                       ),
                     ),
                   ),
@@ -128,12 +131,14 @@ class _HomePageState extends State<HomePage> {
   // timer package constructor --------------------
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,
-    presetMillisecond: StopWatchTimer.getMilliSecFromHour(2),
+    presetMillisecond: StopWatchTimer.getMilliSecFromMinute(30),
    // onChange: (value) => print('onChange $value'),
     // onChangeRawSecond: (value) => print('onChangeRawSecond $value'),
     // onChangeRawMinute: (value) => print('onChangeRawMinute $value'),
     onEnded: () {
-      print('onEnded');
+      if (kDebugMode) {
+        print('onEnded');
+      }
     },
   );
 
@@ -150,21 +155,21 @@ class _HomePageState extends State<HomePage> {
           final displayTime =
           StopWatchTimer.getDisplayTime(value!, hours: _isHour);
 
-          String newHr = displayTime.toString();
+          final newHr = displayTime;
 
           //--------------- using time raw milliseconds
-          var time = DateTime.fromMillisecondsSinceEpoch(value);
+          final time = DateTime.fromMillisecondsSinceEpoch(value);
 
 
           //--------------- check time type and then format
          late int currentTime;
-          if(type == "h"){
+          if(type == 'h'){
             // if hour i will use get charAt to get hour from entire dateTime
-            String hour = newHr[0] + newHr[1];
+            final hour = newHr[0] + newHr[1];
             currentTime = int.parse(hour);
             
 
-          }else if(type == "m"){
+          }else if(type == 'm'){
             currentTime = int.parse(minutesFormat.format(time));
           }else{
             currentTime = int.parse(secondsFormat.format(time));
@@ -172,13 +177,13 @@ class _HomePageState extends State<HomePage> {
 
 
           return Padding(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(2),
               child: ClockFlipWidget(
                 currentTime: currentTime,
                 prefFont: prefFont,
                 prefHeight: prefHeight,
                 prefWeight: prefWeight,
-              )
+              ),
           );
         },
       );
