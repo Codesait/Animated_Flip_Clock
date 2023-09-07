@@ -1,17 +1,14 @@
-import 'package:flip_clock/utils/shared_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final themeProvider =
+    StateNotifierProvider<ThemeProvider, ThemeMode?>((_) => ThemeProvider());
 
-class AppThemeNotifier with ChangeNotifier {
+class ThemeProvider extends StateNotifier<ThemeMode?> {
 
-  DarkThemePreference darkThemePreference = DarkThemePreference();
-  bool _darkTheme = false;
+  ThemeProvider() : super(ThemeMode.system);
 
-  bool get darkTheme => _darkTheme;
-
-  set darkTheme(bool value) {
-    _darkTheme = value;
-    darkThemePreference.setDarkTheme(value:value);
-    notifyListeners();
+  void changeTheme({required bool isOn}) {
+    state = isOn ? ThemeMode.dark : ThemeMode.light;
   }
 }

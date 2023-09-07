@@ -35,13 +35,10 @@ class HomePageState extends State<HomePage> {
   }
 
 
-
   @override
   Widget build(BuildContext context, ) {
 
     final size = MediaQuery.of(context).size;
-
-   // _stopWatchTimer.onExecute.add(StopWatchExecute.start);
 
     return Scaffold(
       body: GestureDetector(
@@ -72,7 +69,7 @@ class HomePageState extends State<HomePage> {
                             children: [
                               Expanded(child: timeStream('h')),
                               Expanded(child: timeStream('m')),
-                              Expanded(child: timeStream('s'))
+                              Expanded(child: timeStream('s')),
                             ],
                           ),
                         );

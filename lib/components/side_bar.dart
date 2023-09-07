@@ -1,10 +1,10 @@
 import 'package:flip_clock/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class SideBar extends StatefulWidget {
+class SideBar extends ConsumerStatefulWidget {
   const SideBar({
     required this.size,
     required this.stopWatchTimer,
@@ -18,26 +18,25 @@ class SideBar extends StatefulWidget {
   SideBarState createState() => SideBarState();
 }
 
-class SideBarState extends State<SideBar> {
+class SideBarState extends ConsumerState<SideBar> {
   bool _isTimerRunning = false;
 
   @override
   Widget build(BuildContext context) {
-    final appThemeStateProvider  = Provider.of<AppThemeNotifier>(context);
+    final appThemeStateProvider  = ref.watch(themeProvider);
 
 
     return  Container(
         width: 50,
         height: 180,
         decoration: BoxDecoration(
-         // color: Colors.black.withOpacity(0.3),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             button(
-              iconData: appThemeStateProvider.darkTheme ?  Icons.wb_sunny :Icons.nights_stay_outlined,
+              iconData: appThemeStateProvider. ?  Icons.wb_sunny :Icons.nights_stay_outlined,
               iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
               clickEvent: () {
                 appThemeStateProvider.darkTheme == false
@@ -57,20 +56,19 @@ class SideBarState extends State<SideBar> {
                 iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
                 clickEvent: (){
                   if(!_isTimerRunning){
-                    widget.stopWatchTimer.onExecute
-                        .add(StopWatchExecute.start);
+                    widget.stopWatchTimer.onStartTimer();
                     setState(() {
                       _isTimerRunning = true;
                     });
 
                   }else {
-                    widget.stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                    widget.stopWatchTimer.onStopTimer();
                     setState(() {
                       _isTimerRunning = false;
                     });
                   }
                 },
-            )
+            ),
           ],
         ),
     );
