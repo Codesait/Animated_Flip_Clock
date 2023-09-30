@@ -6,26 +6,25 @@ import 'package:intl/intl.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class HomePage extends StatefulWidget {
-   const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
-
-
- // static DateTime _currentDateTime = DateTime.now();
+  // static DateTime _currentDateTime = DateTime.now();
   final minutesFormat = DateFormat('m');
   final secondsFormat = DateFormat('ss');
 
- late bool sidebarVisible = true;
+  late bool sidebarVisible = true;
 
   @override
   void initState() {
     super.initState();
-   // var date = DateTime.fromMillisecondsSinceEpoch(300000);
-     _stopWatchTimer.secondTime.listen((value) => debugPrint('secondTime $value'));
+    // var date = DateTime.fromMillisecondsSinceEpoch(300000);
+    _stopWatchTimer.secondTime
+        .listen((value) => debugPrint('secondTime $value'));
   }
 
   @override
@@ -34,17 +33,17 @@ class HomePageState extends State<HomePage> {
     await _stopWatchTimer.dispose();
   }
 
-
   @override
-  Widget build(BuildContext context, ) {
-
+  Widget build(
+    BuildContext context,
+  ) {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           setState(() {
-            if(sidebarVisible) {
+            if (sidebarVisible) {
               sidebarVisible = false;
             } else {
               sidebarVisible = true;
@@ -54,82 +53,112 @@ class HomePageState extends State<HomePage> {
         child: SizedBox(
           width: size.width,
           height: size.height,
-          child:  Stack(
-                children: [
-
-                  SizedBox(
-                    height: size.height,
-                    width: sidebarVisible ? size.width - 60 : size.width,
-                    child: OrientationBuilder(builder: (context, layout) {
-                      if (layout == Orientation.landscape) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: size.height / 2 - 120),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(child: timeStream('h')),
-                              Expanded(child: timeStream('m')),
-                              Expanded(child: timeStream('s')),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
+            children: [
+              SizedBox(
+                height: size.height,
+                width: sidebarVisible ? size.width - 60 : size.width,
+                child: OrientationBuilder(
+                  builder: (context, layout) {
+                    if (layout == Orientation.landscape) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: size.height / 2 - 120,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            Expanded(
+                              child: _TimeStream(
+                                type:'h',
+                                prefHeight: 100,
+                                prefWidth: 150,
+                                stopWatchTimer: _stopWatchTimer,
+                              ),
+                            ),
+                            Expanded(
+                              child: _TimeStream(
+                                type: 'm',
+                                prefHeight: 100,
+                                prefWidth: 150,
+                                stopWatchTimer: _stopWatchTimer,
+                              ),
+                            ),
+                            Expanded(
+                              child: _TimeStream(
+                                type: 's',
+                                stopWatchTimer: _stopWatchTimer,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           // hour box
-                          timeStream('h'),
+                          _TimeStream(
+                            type: 'h',
+                            stopWatchTimer: _stopWatchTimer,
+                          ),
 
                           //minute box
-                          timeStream('m'),
+                          _TimeStream(
+                            type: 'm',
+                            stopWatchTimer: _stopWatchTimer,
+                          ),
                           SizedBox(
                             width: 210,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                const SizedBox(width: 130,),
+                                const SizedBox(
+                                  width: 130,
+                                ),
                                 Flexible(
-                                  child: timeStream(
-                                    's',
-                                    prefFont: 50,
+                                  child: _TimeStream(
+                                    type: 's',
+                                    fontSize: 50,
                                     prefHeight: 40,
-                                    prefWeight: 65,
+                                    prefWidth: 65,
+                                    stopWatchTimer: _stopWatchTimer,
                                   ),
-                                )
+                                ),
                               ],
                             ),
-                          )
-                          ],
-                        );
-                      }
-                    },),
-                  ),
-
-                  Positioned(
-                    right: 10,
-                    height: size.height,
-                    child: Center(
-                      child: Visibility(
-                        visible: sidebarVisible,
-                        child: SideBar(size: size,stopWatchTimer: _stopWatchTimer,),
-                      ),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+              Positioned(
+                right: 10,
+                height: size.height,
+                child: Center(
+                  child: Visibility(
+                    visible: sidebarVisible,
+                    child: SideBar(
+                      size: size,
+                      stopWatchTimer: _stopWatchTimer,
                     ),
                   ),
-
-                ],
+                ),
               ),
+            ],
           ),
+        ),
       ),
     );
   }
-
-  final bool _isHour = true;
 
   // timer package constructor --------------------
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countDown,
     presetMillisecond: StopWatchTimer.getMilliSecFromMinute(30),
-   // onChange: (value) => print('onChange $value'),
+    // onChange: (value) => print('onChange $value'),
     // onChangeRawSecond: (value) => print('onChangeRawSecond $value'),
     // onChangeRawMinute: (value) => print('onChangeRawMinute $value'),
     onEnded: () {
@@ -138,51 +167,60 @@ class HomePageState extends State<HomePage> {
       }
     },
   );
+}
 
+class _TimeStream extends StatelessWidget {
+  const _TimeStream({
+    required this.type,
+    required this.stopWatchTimer,
+    this.fontSize,
+    this.prefHeight,
+    this.prefWidth,
+    super.key,
+  });
 
-  // stream widget -------------------------
-  Widget timeStream(String type,{double? prefFont,double? prefHeight, double? prefWeight}) {
-    return  // seconds box
-      StreamBuilder<int>(
-        stream: _stopWatchTimer.rawTime,
-        initialData: _stopWatchTimer.rawTime.value,
-        builder: (context, snap) {
+  final String type;
+  final double? fontSize;
+  final double? prefHeight;
+  final double? prefWidth;
+  final StopWatchTimer stopWatchTimer;
 
-          final value = snap.data;
-          final displayTime =
-          StopWatchTimer.getDisplayTime(value!, hours: _isHour);
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<int>(
+      stream: stopWatchTimer.rawTime,
+      initialData: stopWatchTimer.rawTime.value,
+      builder: (context, snap) {
+        final value = snap.data;
+        final displayTime = StopWatchTimer.getDisplayTime(value!);
 
-          final newHr = displayTime;
+        final newHr = displayTime;
 
-          //--------------- using time raw milliseconds
-          final time = DateTime.fromMillisecondsSinceEpoch(value);
+        //--------------- using time raw milliseconds
+        final time = DateTime.fromMillisecondsSinceEpoch(value);
 
+        //--------------- check time type and then format
+        late int currentTime;
+        if (type == 'h') {
+          // if hour i will use get charAt to get hour from entire dateTime
+          final hour = newHr[0] + newHr[1];
+          currentTime = int.parse(hour);
+        } else if (type == 'm') {
+          currentTime = int.parse(DateFormat('m').format(time));
+        } else {
+          currentTime = int.parse(DateFormat('ss').format(time));
+        }
 
-          //--------------- check time type and then format
-         late int currentTime;
-          if(type == 'h'){
-            // if hour i will use get charAt to get hour from entire dateTime
-            final hour = newHr[0] + newHr[1];
-            currentTime = int.parse(hour);
-            
-
-          }else if(type == 'm'){
-            currentTime = int.parse(minutesFormat.format(time));
-          }else{
-            currentTime = int.parse(secondsFormat.format(time));
-          }
-
-
-          return Padding(
-              padding: const EdgeInsets.all(2),
-              child: ClockFlipWidget(
-                currentTime: currentTime,
-                prefFont: prefFont,
-                prefHeight: prefHeight,
-                prefWeight: prefWeight,
-              ),
-          );
-        },
-      );
+        return Padding(
+          padding: const EdgeInsets.all(2),
+          child: ClockFlipWidget(
+            currentTime: currentTime,
+            prefFont: fontSize,
+            prefHeight: prefHeight,
+            prefWeight: prefWidth,
+          ),
+        );
+      },
+    );
   }
 }

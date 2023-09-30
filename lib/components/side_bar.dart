@@ -23,7 +23,7 @@ class SideBarState extends ConsumerState<SideBar> {
 
   @override
   Widget build(BuildContext context) {
-    final appThemeStateProvider  = ref.watch(themeProvider);
+    final themeState  = ref.watch(themeProvider.notifier);
 
 
     return  Container(
@@ -36,24 +36,19 @@ class SideBarState extends ConsumerState<SideBar> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             button(
-              iconData: appThemeStateProvider. ?  Icons.wb_sunny :Icons.nights_stay_outlined,
-              iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
+              iconData: themeState.isLightTheme() ?  Icons.wb_sunny :Icons.nights_stay_outlined,
               clickEvent: () {
-                appThemeStateProvider.darkTheme == false
-                ? appThemeStateProvider.darkTheme = true
-                : appThemeStateProvider.darkTheme = false;
+                ref.read(themeProvider.notifier).changeTheme();
               },
             ),
             button(
                 iconData:  Icons.screen_rotation,
-                iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
                 clickEvent: (){
                   switchOrientation(context);
                 },
             ),
             button(
                 iconData: _isTimerRunning ? Icons.pause : Icons.play_arrow_outlined,
-                iconColor:  appThemeStateProvider.darkTheme ? Colors.white : Colors.black54,
                 clickEvent: (){
                   if(!_isTimerRunning){
                     widget.stopWatchTimer.onStartTimer();
