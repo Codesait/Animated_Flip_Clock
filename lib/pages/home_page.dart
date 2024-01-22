@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
@@ -216,8 +216,8 @@ class _TimeStream extends StatelessWidget {
           child: ClockFlipWidget(
             currentTime: currentTime,
             prefFont: fontSize,
-            prefHeight: prefHeight,
-            prefWeight: prefWidth,
+            prefHeight: prefHeight!,
+            prefWeight: prefWidth!,
           ),
         );
       },

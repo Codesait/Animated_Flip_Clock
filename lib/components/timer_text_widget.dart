@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TimerTextWidget extends StatefulWidget {
-  const TimerTextWidget({Key? key, this.clockCount, this.prefFont})
-      : super(key: key);
+  const TimerTextWidget({super.key, this.clockCount, this.prefFont});
   final int? clockCount;
   final double? prefFont;
 

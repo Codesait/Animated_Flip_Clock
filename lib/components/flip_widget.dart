@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 class ClockFlipWidget extends StatefulWidget {
   const ClockFlipWidget({
     required this.currentTime,
-    Key? key,
     this.prefHeight = 100,
     this.prefWeight = 200,
     this.prefFont,
-  }) : super(key: key);
+    super.key,
+  });
 
   final int currentTime;
-  final double? prefHeight;
-  final double? prefWeight;
+  final double prefHeight;
+  final double prefWeight;
   final double? prefFont;
 
   @override
@@ -65,27 +65,29 @@ class ClockFlipWidgetState extends State<ClockFlipWidget>
     _onTimeChange();
 
     return Container(
-      height: widget.prefHeight,
+      height: widget.prefHeight / 2,
       width: widget.prefWeight,
       padding: const EdgeInsets.all(8),
       child: Column(
         children: [
           // top fraction of stack container
-          Container(
-            height: widget.prefHeight,
-            width: widget.prefWeight,
-            decoration: _decoration(true),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  top: 5,
-                  child: TimerTextWidget(
-                    clockCount: widget.currentTime,
-                    prefFont: widget.prefFont,
+          Expanded(
+            child: Container(
+              height: widget.prefHeight,
+              width: widget.prefWeight,
+              decoration: _decoration(true),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    top: 5,
+                    child: TimerTextWidget(
+                      clockCount: widget.currentTime,
+                      prefFont: widget.prefFont,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -95,78 +97,80 @@ class ClockFlipWidgetState extends State<ClockFlipWidget>
           ),
 
           // bottom fraction of stack container
-          Stack(
-            children: [
-              Container(
-                height: widget.prefHeight,
-                width: widget.prefWeight,
-                decoration: _decoration(false),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      bottom: 10,
-                      child: TimerTextWidget(
-                        clockCount: widget.currentTime,
-                        prefFont: widget.prefFont,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              AnimatedBuilder(
-                animation: _animation,
-                child: Container(
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
                   height: widget.prefHeight,
                   width: widget.prefWeight,
                   decoration: _decoration(false),
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      Visibility(
-                        visible: (_animation.value as double) < 4.71,
-                        child: const Align(
-                          alignment: Alignment.topCenter,
-                          child: Divider(
-                            height: 6,
-                            thickness: 3,
-                            color: Colors.white,
-                          ),
+                      Positioned(
+                        bottom: 10,
+                        child: TimerTextWidget(
+                          clockCount: widget.currentTime,
+                          prefFont: widget.prefFont,
                         ),
                       ),
-                      if ((_animation.value as double) > 4.71)
-                        Positioned(
-                          bottom: 5,
-                          child: TimerTextWidget(
-                            clockCount: widget.currentTime,
-                            prefFont: widget.prefFont,
+                    ],
+                  ),
+                ),
+                AnimatedBuilder(
+                  animation: _animation,
+                  child: Container(
+                    height: widget.prefHeight,
+                    width: widget.prefWeight,
+                    decoration: _decoration(false),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Visibility(
+                          visible: (_animation.value as double) < 4.71,
+                          child: const Align(
+                            alignment: Alignment.topCenter,
+                            child: Divider(
+                              height: 6,
+                              thickness: 3,
+                              color: Colors.white,
+                            ),
                           ),
-                        )
-                      else
-                        Positioned(
-                          top: widget.prefHeight != null ? 40 : 106,
-                          child: Transform(
-                            transform: Matrix4.rotationX(math.pi),
+                        ),
+                        if ((_animation.value as double) > 4.71)
+                          Positioned(
+                            bottom: 5,
                             child: TimerTextWidget(
                               clockCount: widget.currentTime,
                               prefFont: widget.prefFont,
                             ),
+                          )
+                        else
+                          Positioned(
+                            top: widget.prefHeight != null ? 40 : 106,
+                            child: Transform(
+                              transform: Matrix4.rotationX(math.pi),
+                              child: TimerTextWidget(
+                                clockCount: widget.currentTime,
+                                prefFont: widget.prefFont,
+                              ),
+                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
+                  builder: (context, child) {
+                    return Transform(
+                      alignment: Alignment.topCenter,
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.003)
+                        ..rotateX(double.parse(_animation.value.toString())),
+                      child: child,
+                    );
+                  },
                 ),
-                builder: (context, child) {
-                  return Transform(
-                    alignment: Alignment.topCenter,
-                    transform: Matrix4.identity()
-                      ..setEntry(3, 2, 0.003)
-                      ..rotateX(double.parse(_animation.value.toString())),
-                    child: child,
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
