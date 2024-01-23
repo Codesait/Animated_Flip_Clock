@@ -31,7 +31,7 @@ class AppTheme {
     cardColor: const Color(0xFF151515),
     canvasColor: Colors.black,
     brightness: Brightness.dark,
-    iconTheme: const IconThemeData(color: Colors.black54),
+    iconTheme: const IconThemeData(color: Colors.white),
     appBarTheme: const AppBarTheme(
       elevation: 0,
     ),

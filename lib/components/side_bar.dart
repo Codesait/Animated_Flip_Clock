@@ -8,8 +8,8 @@ class SideBar extends ConsumerStatefulWidget {
   const SideBar({
     required this.size,
     required this.stopWatchTimer,
-    Key? key,
-    }) : super(key: key);
+    super.key,
+    });
 
  final Size size;
  final StopWatchTimer stopWatchTimer;

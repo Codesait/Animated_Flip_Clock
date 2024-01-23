@@ -1,7 +1,9 @@
 import 'package:flip_clock/components/flip_widget.dart';
 import 'package:flip_clock/components/side_bar.dart';
+import 'package:flip_clock/utils/screen_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -22,9 +24,19 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     // var date = DateTime.fromMillisecondsSinceEpoch(300000);
     _stopWatchTimer.secondTime
         .listen((value) => debugPrint('secondTime $value'));
+  }
+
+  @override
+  void didChangeDependencies() {
+    SystemChrome.setPreferredOrientations([
+      if (MediaQuery.of(context).orientation != Orientation.landscape)
+        DeviceOrientation.landscapeLeft,
+    ]);
+    super.didChangeDependencies();
   }
 
   @override
@@ -54,85 +66,49 @@ class HomePageState extends State<HomePage> {
           width: size.width,
           height: size.height,
           child: Stack(
+            alignment: Alignment.center,
             children: [
-              SizedBox(
-                height: size.height,
-                width: sidebarVisible ? size.width - 60 : size.width,
-                child: OrientationBuilder(
-                  builder: (context, layout) {
-                    if (layout == Orientation.landscape) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: size.height / 2 - 120,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Expanded(
-                              child: _TimeStream(
-                                type:'h',
-                                prefHeight: 100,
-                                prefWidth: 150,
-                                stopWatchTimer: _stopWatchTimer,
-                              ),
-                            ),
-                            Expanded(
-                              child: _TimeStream(
-                                type: 'm',
-                                prefHeight: 100,
-                                prefWidth: 150,
-                                stopWatchTimer: _stopWatchTimer,
-                              ),
-                            ),
-                            Expanded(
-                              child: _TimeStream(
-                                type: 's',
-                                stopWatchTimer: _stopWatchTimer,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+              OrientationBuilder(
+                builder: (context, layout) {
+                  if (layout == Orientation.landscape) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 1,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          // hour box
-                          _TimeStream(
-                            type: 'h',
-                            stopWatchTimer: _stopWatchTimer,
+                          Expanded(
+                            child: _TimeStream(
+                              type: 'h',
+                              prefHeight: fullHeight(context),
+                              prefWidth: fullWidth(context) / 3,
+                              stopWatchTimer: _stopWatchTimer,
+                            ),
                           ),
-
-                          //minute box
-                          _TimeStream(
-                            type: 'm',
-                            stopWatchTimer: _stopWatchTimer,
+                          Expanded(
+                            child: _TimeStream(
+                              type: 'm',
+                              prefHeight: fullHeight(context),
+                              prefWidth: fullWidth(context) / 3,
+                              stopWatchTimer: _stopWatchTimer,
+                            ),
                           ),
-                          SizedBox(
-                            width: 210,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const SizedBox(
-                                  width: 130,
-                                ),
-                                Flexible(
-                                  child: _TimeStream(
-                                    type: 's',
-                                    fontSize: 50,
-                                    prefHeight: 40,
-                                    prefWidth: 65,
-                                    stopWatchTimer: _stopWatchTimer,
-                                  ),
-                                ),
-                              ],
+                          Expanded(
+                            child: _TimeStream(
+                              type: 's',
+                              prefHeight: fullHeight(context),
+                              prefWidth: fullWidth(context) / 3,
+                              stopWatchTimer: _stopWatchTimer,
                             ),
                           ),
                         ],
-                      );
-                    }
-                  },
-                ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
               ),
               Positioned(
                 right: 10,
